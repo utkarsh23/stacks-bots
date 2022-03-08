@@ -49,7 +49,7 @@ def bns_bot(self):
         block = dict(stacks_block_resp.json())
         tx_count = len(block['results'])
 
-        for tx_index in range(tx_count):
+        for tx_index in reversed(range(tx_count)):
 
             tx = block['results'][tx_index]
             should_tweet = False
