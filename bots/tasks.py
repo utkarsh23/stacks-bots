@@ -90,11 +90,11 @@ def bns_bot(self):
                 except Exception as e:
                     raise self.retry(exc=e, countdown=45)
 
-                stacks_info_model.bns_sync_height += 1
-                stacks_info_model.save()
-
                 # To prevent breach of Twitter API rate limit - 200 tweets / 15 mins
                 # and also to avoid hitting rate limits for Stacks API
                 # (15 x 60) secs / 200 tweets = 4.5 secs per tweet rounded off to 5 secs
                 # More here: https://developer.twitter.com/en/docs/twitter-api/rate-limits
                 time.sleep(5)
+
+            stacks_info_model.bns_sync_height = block_number
+            stacks_info_model.save()
