@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -132,11 +132,17 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# twitter credentials
-CONSUMER_KEY = os.getenv('CONSUMER_KEY')
-CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
-ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
-ACCESS_SECRET = os.getenv('ACCESS_SECRET')
+# twitter bns credentials
+BNS_CONSUMER_KEY = os.getenv('BNS_CONSUMER_KEY')
+BNS_CONSUMER_SECRET = os.getenv('BNS_CONSUMER_SECRET')
+BNS_ACCESS_TOKEN = os.getenv('BNS_ACCESS_TOKEN')
+BNS_ACCESS_SECRET = os.getenv('BNS_ACCESS_SECRET')
+
+# twitter btc credentials
+BTC_CONSUMER_KEY = os.getenv('BTC_CONSUMER_KEY')
+BTC_CONSUMER_SECRET = os.getenv('BTC_CONSUMER_SECRET')
+BTC_ACCESS_TOKEN = os.getenv('BTC_ACCESS_TOKEN')
+BTC_ACCESS_SECRET = os.getenv('BTC_ACCESS_SECRET')
 
 STACKS_BASE_URL = os.getenv('STACKS_BASE_URL')
 EXPLORER_BASE_URL = os.getenv('EXPLORER_BASE_URL')
