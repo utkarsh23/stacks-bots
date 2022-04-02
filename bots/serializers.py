@@ -11,7 +11,7 @@ class LeaderboardApiSerializer(Serializer):
         data['twitter_id'] = obj.twitter_id
         data['twitter_name'] = obj.twitter_name
         data['twitter_username'] = obj.twitter_username
-        data['twitter_follower_acount'] = obj.twitter_follower_acount
+        data['twitter_follower_count'] = obj.twitter_follower_count
         return data
 
 

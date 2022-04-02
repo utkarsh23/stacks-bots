@@ -27,6 +27,6 @@ class LeaderboardApi(View):
         else:
             offset = int(offset_str)
 
-        queryset = Leaderboard.objects.filter(is_updated=True).order_by('-twitter_follower_acount')[offset:offset+limit]
+        queryset = Leaderboard.objects.filter(is_updated=True).order_by('-twitter_follower_count')[offset:offset+limit]
 
         return HttpResponse(leaderboard_api_serializer.serialize(queryset), content_type='application/json')

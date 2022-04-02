@@ -1,23 +1,28 @@
+import math
 import requests
 import time
 import tweepy
 
-from datetime import datetime, tzinfo
+from datetime import datetime, timedelta
+
+from millify import millify
 
 from django.conf import settings
 from django.db.models import Q
+from django.utils import timezone
 
 from pytwitter import Api
 
 from stacksbots.celery import app
 
-from bots.models import StacksInfo, Leaderboard, Mentions
+from bots.models import StacksInfo, BTCName, Leaderboard, Mentions
 from bots.utils import hex_to_text
 
 STACKS_BASE_URL = settings.STACKS_BASE_URL
 EXPLORER_BASE_URL = settings.EXPLORER_BASE_URL
 BNS_CONTRACT_ADDR = 'SP000000000000000000002Q6VF78.bns'
 BTC_USER_ID = "1507573158773239811"
+LEADERBOARD_WEBSITE = settings.LEADERBOARD_WEBSITE
 
 
 # BNS Bot
@@ -48,6 +53,17 @@ def batch_qs(qs, batch_size):
     for start in range(0, total, batch_size):
         end = min(start + batch_size, total)
         yield (start, end, total, qs[start:end])
+
+
+def top_100_tweet(twitter_id):
+
+    leaderboard_obj = Leaderboard.objects.filter(twitter_id=twitter_id).first()
+    rank = Leaderboard.objects.filter(
+        is_updated=True, twitter_follower_count__gt=leaderboard_obj.twitter_follower_count).count() + 1
+    tweet_text = f"{leaderboard_obj.twitter_name} entered the top 100 most followed Twitter accounts with a BTC name at number {rank}!\n\n"
+    tweet_text += f"Welcome {leaderboard_obj.twitter_username} 🎉"
+
+    return tweet_text
 
 
 @app.task(bind=True)
@@ -115,10 +131,14 @@ def bns_bot(self):
 
                 try:
                     tweet_text = ' '.join([text, link])
-                    bns_api_v2.create_tweet(text=tweet_text)
+                    btc_api_v2.create_tweet(text=tweet_text)
 
                 except Exception as e:
                     raise self.retry(exc=e, countdown=45)
+
+                if tx['contract_call']['function_name'] == 'name-register' and namespace == 'btc':
+                    BTCName.objects.create(
+                        name=f'{name}.{namespace}', tweeted_at=timezone.now())
 
                 # To prevent breach of Twitter API rate limit - 200 tweets / 15 mins
                 # and also to avoid hitting rate limits for Stacks API
@@ -131,7 +151,26 @@ def bns_bot(self):
 
 
 @app.task(bind=True)
+def btc_weekly_update(self):
+
+    current_time = timezone.now()
+    past_time = current_time - timedelta(days=7)
+    tweet_count = BTCName.objects.filter(
+        tweeted_at__range=(past_time, current_time)).count()
+    tweet_text = f"{'{:,}'.format(tweet_count)} btc names were registered in the past week 🎉"
+
+    try:
+        btc_api_v2.create_tweet(text=tweet_text)
+
+    except Exception as e:
+        raise self.retry(exc=e, countdown=45)
+
+
+@app.task(bind=True)
 def btc_names(self):
+
+    top_100_floor_objs = Leaderboard.objects.filter(
+        is_updated=True).order_by('-twitter_follower_count')[:100]
 
     # Max results per page = 20
     # Only first 1000 matching results are returned
@@ -158,13 +197,33 @@ def btc_names(self):
 
             if not profile_exists and ".btc" in user.name:
 
-                Leaderboard.objects.create(
+                leaderboard_obj = Leaderboard.objects.create(
                     twitter_id=user.id_str,
                     twitter_name=user.name,
                     twitter_username=user.screen_name,
-                    twitter_follower_acount=user.followers_count,
+                    twitter_follower_count=user.followers_count,
                     is_updated=True,
                 )
+
+                if top_100_floor_objs.count() == 100:
+
+                    top_100_floor = top_100_floor_objs[top_100_floor_objs.count(
+                    ) - 1].twitter_follower_count
+
+                    if leaderboard_obj.twitter_follower_count >= top_100_floor:
+
+                        try:
+                            btc_api_v2.create_tweet(
+                                text=top_100_tweet(leaderboard_obj.twitter_id))
+
+                        except Exception as e:
+                            raise self.retry(exc=e, countdown=45)
+
+                        # To prevent breach of Twitter API rate limit - 200 tweets / 15 mins
+                        # and also to avoid hitting rate limits for Stacks API
+                        # (15 x 60) secs / 200 tweets = 4.5 secs per tweet rounded off to 5 secs
+                        # More here: https://developer.twitter.com/en/docs/twitter-api/rate-limits
+                        time.sleep(5)
 
         # To prevent breach of Twitter API rate limit - 900 requests / 15 mins
         # (15 x 60) secs / 900 requests = 1 sec per request
@@ -174,10 +233,39 @@ def btc_names(self):
 
 
 @app.task(bind=True)
+def btc_monthly_review(self):
+
+    leaderboard = Leaderboard.objects.filter(is_updated=True)
+    leaderboard_count = leaderboard.count()
+    top_10_floor_objs = leaderboard.order_by('-twitter_follower_count')[:10]
+    if top_10_floor_objs.count() != 10:
+        return
+    top_10_floor = top_10_floor_objs[top_10_floor_objs.count(
+    ) - 1].twitter_follower_count
+    top_100_floor_objs = leaderboard.order_by('-twitter_follower_count')[:100]
+    if top_100_floor_objs.count() != 100:
+        return
+    top_100_floor = top_100_floor_objs[top_100_floor_objs.count(
+    ) - 1].twitter_follower_count
+    tweet_text = f"✨ {timezone.now().strftime('%B')} in review:\n\n"
+    tweet_text += f"- {millify(leaderboard_count, precision=1)} profiles on {LEADERBOARD_WEBSITE}\n"
+    tweet_text += f"- Top 10 rank floor: {millify(top_10_floor, precision=1)} followers\n"
+    tweet_text += f"- Top 100 rank floor: {millify(top_100_floor, precision=1)} followers\n"
+
+    try:
+        btc_api_v2.create_tweet(text=tweet_text)
+
+    except Exception as e:
+        raise self.retry(exc=e, countdown=45)
+
+
+@app.task(bind=True)
 def leaderboard_update(self):
 
     leaderboard_objs = Leaderboard.objects.filter(~Q(twitter_id=None))
     batch_size = 100
+    top_100_floor_objs = Leaderboard.objects.filter(
+        is_updated=True).order_by('-twitter_follower_count')[:100]
 
     for _, _, _, rows in batch_qs(leaderboard_objs, batch_size):
 
@@ -204,12 +292,35 @@ def leaderboard_update(self):
 
                 if ".btc" in users[i].name:
 
+                    prev_follower_count = leaderboard_row.twitter_follower_count
+
                     leaderboard_row.twitter_id = users[i].id_str
                     leaderboard_row.twitter_name = users[i].name
                     leaderboard_row.twitter_username = users[i].screen_name
-                    leaderboard_row.twitter_follower_acount = users[i].followers_count
+                    leaderboard_row.twitter_follower_count = users[i].followers_count
                     leaderboard_row.is_updated = True
                     leaderboard_row.save()
+
+                    if top_100_floor_objs.count() == 100:
+
+                        top_100_floor = top_100_floor_objs[top_100_floor_objs.count(
+                        ) - 1].twitter_follower_count
+
+                        if (not prev_follower_count or prev_follower_count < top_100_floor) \
+                                and leaderboard_row.twitter_follower_count >= top_100_floor:
+
+                            try:
+                                btc_api_v2.create_tweet(
+                                    text=top_100_tweet(leaderboard_row.twitter_id))
+
+                            except Exception as e:
+                                raise self.retry(exc=e, countdown=45)
+
+                            # To prevent breach of Twitter API rate limit - 200 tweets / 15 mins
+                            # and also to avoid hitting rate limits for Stacks API
+                            # (15 x 60) secs / 200 tweets = 4.5 secs per tweet rounded off to 5 secs
+                            # More here: https://developer.twitter.com/en/docs/twitter-api/rate-limits
+                            time.sleep(5)
 
                 else:
 
@@ -246,12 +357,35 @@ def leaderboard_update(self):
             if leaderboard_rows.exists() and leaderboard_rows.count() == 1:
 
                 leaderboard_row = leaderboard_rows.first()
+                prev_follower_count = leaderboard_row.twitter_follower_count
+
                 leaderboard_row.twitter_id = users[i].id_str
                 leaderboard_row.twitter_name = users[i].name
                 leaderboard_row.twitter_username = users[i].screen_name
-                leaderboard_row.twitter_follower_acount = users[i].followers_count
+                leaderboard_row.twitter_follower_count = users[i].followers_count
                 leaderboard_row.is_updated = True
                 leaderboard_row.save()
+
+                if top_100_floor_objs.count() == 100:
+
+                    top_100_floor = top_100_floor_objs[top_100_floor_objs.count(
+                    ) - 1].twitter_follower_count
+
+                    if (not prev_follower_count or prev_follower_count < top_100_floor) \
+                            and leaderboard_row.twitter_follower_count >= top_100_floor:
+
+                        try:
+                            btc_api_v2.create_tweet(
+                                text=top_100_tweet(leaderboard_row.twitter_id))
+
+                        except Exception as e:
+                            raise self.retry(exc=e, countdown=45)
+
+                        # To prevent breach of Twitter API rate limit - 200 tweets / 15 mins
+                        # and also to avoid hitting rate limits for Stacks API
+                        # (15 x 60) secs / 200 tweets = 4.5 secs per tweet rounded off to 5 secs
+                        # More here: https://developer.twitter.com/en/docs/twitter-api/rate-limits
+                        time.sleep(5)
 
         # To prevent breach of Twitter API rate limit - 900 requests / 15 mins
         # (15 x 60) secs / 900 requests = 1 sec per request
@@ -264,8 +398,10 @@ def leaderboard_update(self):
 def mentions(self):
 
     mention_obj = Mentions.objects.get(pk=1)
-    start_time = mention_obj.updated_at.replace(tzinfo=None).isoformat(timespec="seconds") + 'Z'
-    end_time = datetime.utcnow().replace(tzinfo=None).isoformat(timespec="seconds") + 'Z'
+    start_time = mention_obj.updated_at.replace(
+        tzinfo=None).isoformat(timespec="seconds") + 'Z'
+    end_time = datetime.utcnow().replace(
+        tzinfo=None).isoformat(timespec="seconds") + 'Z'
     pagination_token = None
 
     while True:
@@ -290,7 +426,8 @@ def mentions(self):
                 if (".btc" in user.name) and \
                         not Leaderboard.objects.filter(twitter_id=user.id).exists():
 
-                    Leaderboard.objects.create(twitter_id=user.id, is_updated=False)
+                    Leaderboard.objects.create(
+                        twitter_id=user.id, is_updated=False)
 
         if not (res and res.meta and res.meta.next_token):
             break
