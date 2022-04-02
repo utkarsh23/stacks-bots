@@ -131,7 +131,7 @@ def bns_bot(self):
 
                 try:
                     tweet_text = ' '.join([text, link])
-                    btc_api_v2.create_tweet(text=tweet_text)
+                    bns_api_v2.create_tweet(text=tweet_text)
 
                 except Exception as e:
                     raise self.retry(exc=e, countdown=45)
