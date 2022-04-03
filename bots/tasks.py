@@ -157,7 +157,7 @@ def btc_weekly_update(self):
     past_time = current_time - timedelta(days=7)
     tweet_count = BTCName.objects.filter(
         tweeted_at__range=(past_time, current_time)).count()
-    tweet_text = f"{'{:,}'.format(tweet_count)} btc names were registered in the past week 🎉"
+    tweet_text = f"{'{:,}'.format(tweet_count)} BTC names were registered in the past week 🎉"
 
     try:
         btc_api_v2.create_tweet(text=tweet_text)
