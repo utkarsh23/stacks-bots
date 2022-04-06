@@ -4,6 +4,7 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -32,21 +33,35 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mdl-cell mdl-cell--6-col rank-wrapper">
+                    <div class="mdl-cell mdl-cell--6-col rank-wrapper mdl-cell--hide-phone">
                         <div>
                             <div class="rank-header">&gt;&nbsp;{{ top_10_rank_floor|millify_val }}</div>
                             <div class="rank-details">Followers For <span class="emphasis">Top 10</span></div>
                         </div>
                     </div>
-                    <div class="mdl-cell mdl-cell--6-col rank-wrapper">
+                    <div
+                        class="mdl-cell mdl-cell--2-col-phone rank-wrapper mdl-cell--hide-tablet mdl-cell--hide-desktop">
+                        <div>
+                            <div class="rank-header">&gt;&nbsp;{{ top_10_rank_floor|millify_val }}</div>
+                            <div class="rank-details"><span class="emphasis">Top 10</span></div>
+                        </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col rank-wrapper mdl-cell--hide-phone">
                         <div>
                             <div class="rank-header">&gt;&nbsp;{{ top_100_rank_floor|millify_val }}</div>
                             <div class="rank-details">Followers For <span class="emphasis">Top 100</span></div>
                         </div>
                     </div>
+                    <div
+                        class="mdl-cell mdl-cell--2-col-phone rank-wrapper mdl-cell--hide-tablet mdl-cell--hide-desktop">
+                        <div>
+                            <div class="rank-header">&gt;&nbsp;{{ top_100_rank_floor|millify_val }}</div>
+                            <div class="rank-details"><span class="emphasis">Top 100</span></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="mdl-grid content-wrapper">
-                    <div class="mdl-cell mdl-cell--4-col">
+                    <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">
                         <form id="search-form">
                             <input class="mdl-textfield mdl-js-textfield" placeholder="Search..." type="text"
                                 value="{{ search_query }}" id="search-box" />
@@ -56,10 +71,10 @@
                             </button>
                         </form>
                     </div>
-                    <div class="mdl-cell mdl-cell--4-col">
+                    <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">
                         <div class="res-count">Count: {{ page_obj.paginator.count }} names</div>
                     </div>
-                    <div class="mdl-cell mdl-cell--4-col">
+                    <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">
                         <div class="pagination pagination-top">
                             <span class="step-links">
                                 {% if page_obj.has_previous %}
@@ -94,30 +109,32 @@
                         </div>
                     </div>
                     <div class="mdl-cell mdl-cell--12-col">
-                        <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-                            <thead>
-                                <tr>
-                                    <th>Rank</th>
-                                    <th class="mdl-data-table__cell--non-numeric">Name</th>
-                                    <th class="mdl-data-table__cell--non-numeric">Twitter</th>
-                                    <th>Followers</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for detail in page_obj %}
-                                <tr>
-                                    <td>{{ forloop.counter|rank:page_obj.number }}</td>
-                                    <td class="mdl-data-table__cell--non-numeric">{{ detail.twitter_name }}</td>
-                                    <td class="mdl-data-table__cell--non-numeric tw-link">
-                                        <a href="https://twitter.com/{{ detail.twitter_username }}" target="_blank">
-                                            @{{ detail.twitter_username }}
-                                        </a>
-                                    </td>
-                                    <td>{{ detail.twitter_follower_count|intcomma }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                        <div class="table-wrapper">
+                            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th class="mdl-data-table__cell--non-numeric">Name</th>
+                                        <th class="mdl-data-table__cell--non-numeric">Twitter</th>
+                                        <th>Followers</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for detail in page_obj %}
+                                    <tr>
+                                        <td>{{ forloop.counter|rank:page_obj.number }}</td>
+                                        <td class="mdl-data-table__cell--non-numeric">{{ detail.twitter_name }}</td>
+                                        <td class="mdl-data-table__cell--non-numeric tw-link">
+                                            <a href="https://twitter.com/{{ detail.twitter_username }}" target="_blank">
+                                                @{{ detail.twitter_username }}
+                                            </a>
+                                        </td>
+                                        <td>{{ detail.twitter_follower_count|intcomma }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="mdl-cell mdl-cell--12-col">
                         <div class="pagination pagination-bottom">

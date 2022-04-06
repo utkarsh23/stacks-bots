@@ -3,6 +3,11 @@
     src: url('SF-Pro.ttf');
 }
 
+@font-face {
+    font-family: 'BlinkMacSystemFontBold,sans-serif';
+    src: url('SF-Pro-Display-Bold.otf');
+}
+
 body {
     background-color: #FF9500;
     font-family: 'BlinkMacSystemFont,sans-serif' !important;
@@ -89,7 +94,7 @@ a {
 .res-count {
     background-color: #ffffff;
     width: fit-content;
-    font-weight: bold;
+    font-family: 'BlinkMacSystemFontBold,sans-serif';
     border-radius: 16px;
     height: 32px;
     font-size: 20px;
@@ -114,19 +119,19 @@ a {
 .rank-header {
     color: #FF9500;
     font-size: 45px;
-    font-weight: bold;
+    font-family: 'BlinkMacSystemFontBold,sans-serif';
 }
 
 .rank-details {
     color: #717171;
     font-size: 20px;
     margin-top: 20px;
-    font-weight: bold;
+    font-family: 'BlinkMacSystemFontBold,sans-serif';
 }
 
 .emphasis {
     color: #000000;
-    font-weight: bold;
+    font-family: 'BlinkMacSystemFontBold,sans-serif';
 }
 
 .section-wrapper {
@@ -145,7 +150,7 @@ a {
 
 .page-heading {
     font-size: 45px;
-    font-weight: bold;
+    font-family: 'BlinkMacSystemFontBold,sans-serif';
     text-align: center;
     margin-top: 20px;
 }
@@ -180,4 +185,64 @@ a {
 .content-wrapper {
     max-width: 100%;
     width: 1200px;
+}
+
+@media only screen and (max-width: 900px) {
+    .page-heading {
+        font-size: 35px;
+    }
+
+    .page-subheading {
+        font-size: 20px;
+    }
+
+    .page-heading-wrapper {
+        padding: 40px 5px 5px 5px;
+    }
+
+    .rank-header {
+        font-size: 35px;
+        text-align: center;
+    }
+
+    .rank-details {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .res-count {
+        width: -webkit-fill-available;
+        display: flex;
+        justify-content: center;
+        margin: auto;
+    }
+
+    .pagination-top,
+    .pagination-bottom {
+        margin: auto;
+    }
+
+    .content-wrapper>div {
+        padding-right: 16px;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        margin-right: 16px;
+        border-radius: 16px;
+    }
+
+    table {
+        border-radius: 0px;
+    }
+
+    form {
+        justify-content: space-between;
+    }
+
+    input {
+        max-width: 100%;
+        width: 500px;
+    }
 }
