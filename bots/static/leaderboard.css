@@ -1,0 +1,183 @@
+@font-face {
+    font-family: 'BlinkMacSystemFont,sans-serif';
+    src: url('SF-Pro.ttf');
+}
+
+body {
+    background-color: #FF9500;
+    font-family: 'BlinkMacSystemFont,sans-serif' !important;
+}
+
+form {
+    margin-bottom: 0px;
+    display: flex;
+}
+
+.page-content {
+    max-width: 100%;
+    margin: auto;
+}
+
+.pagination {
+    color: #ffffff;
+}
+
+.pagination-bottom {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: fit-content;
+    margin-left: auto;
+}
+
+.pagination-top {
+    width: fit-content;
+    margin-left: auto;
+}
+
+button.mdl-button--icon,
+button.mdl-button--icon:hover {
+    background-color: #ffffff;
+    color: #FF9500;
+}
+
+input {
+    padding: 0px !important;
+    height: 32px;
+    border: none;
+    border-radius: 5px;
+    padding-left: 16px !important;
+    max-width: 80%;
+    border-radius: 16px;
+    font-family: 'BlinkMacSystemFont,sans-serif';
+}
+
+.current {
+    font-size: 1.2em;
+}
+
+.step-links {
+    display: flex;
+    align-items: center;
+}
+
+table {
+    border-radius: 16px;
+    margin: auto;
+    width: 100%;
+}
+
+.mdl-data-table td {
+    font-size: 20px;
+}
+
+.mdl-data-table th {
+    font-size: 15px;
+}
+
+.mdl-data-table tbody tr:hover {
+    background-color: #ffffff;
+}
+
+a {
+    text-decoration: none;
+}
+
+.tw-link a {
+    color: rgb(29, 155, 240);
+}
+
+.res-count {
+    background-color: #ffffff;
+    width: fit-content;
+    font-weight: bold;
+    border-radius: 16px;
+    height: 32px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: auto;
+}
+
+.rank-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rank-wrapper>div {
+    padding: 30px 20px 20px 20px;
+    border-radius: 16px;
+}
+
+.rank-header {
+    color: #FF9500;
+    font-size: 45px;
+    font-weight: bold;
+}
+
+.rank-details {
+    color: #717171;
+    font-size: 20px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.emphasis {
+    color: #000000;
+    font-weight: bold;
+}
+
+.section-wrapper {
+    background-color: #ffffff;
+}
+
+.section-top-wrapper {
+    width: 1200px;
+    margin: auto;
+    position: relative;
+}
+
+.page-heading-wrapper {
+    padding: 20px;
+}
+
+.page-heading {
+    font-size: 45px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.page-subheading {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+.bitcoin-yellow {
+    color: #FF9500;
+}
+
+.bitcoin-logo {
+    display: inline-block;
+    color: #FF9500;
+    -ms-transform: rotate(10deg);
+    transform: rotate(10deg);
+}
+
+.twitter-logo {
+    position: absolute;
+    right: 20;
+    font-size: 30px;
+}
+
+.twitter-logo a {
+    color: rgb(29, 155, 240);
+}
+
+.content-wrapper {
+    max-width: 100%;
+    width: 1200px;
+}
