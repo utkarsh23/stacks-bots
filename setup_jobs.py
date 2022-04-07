@@ -11,7 +11,7 @@ bns_bot_schedule, _ = CrontabSchedule.objects.get_or_create(
 PeriodicTask.objects.create(
     crontab=bns_bot_schedule,
     name='BNS Bot',
-    task='stacksbots.tasks.bns_bot',
+    task='bots.tasks.bns_bot',
 )
 
 btc_weekly_update_schedule, _ = CrontabSchedule.objects.get_or_create(
@@ -24,7 +24,7 @@ btc_weekly_update_schedule, _ = CrontabSchedule.objects.get_or_create(
 PeriodicTask.objects.create(
     crontab=btc_weekly_update_schedule,
     name='BTC Weekly Update',
-    task='stacksbots.tasks.btc_weekly_update',
+    task='bots.tasks.btc_weekly_update',
 )
 
 btc_names_schedule, _ = CrontabSchedule.objects.get_or_create(
@@ -37,7 +37,7 @@ btc_names_schedule, _ = CrontabSchedule.objects.get_or_create(
 PeriodicTask.objects.create(
     crontab=btc_names_schedule,
     name='BTC Names',
-    task='stacksbots.tasks.btc_names',
+    task='bots.tasks.btc_names',
 )
 
 btc_monthly_review_schedule, _ = CrontabSchedule.objects.get_or_create(
@@ -50,7 +50,7 @@ btc_monthly_review_schedule, _ = CrontabSchedule.objects.get_or_create(
 PeriodicTask.objects.create(
     crontab=btc_monthly_review_schedule,
     name='BTC Monthly Review',
-    task='stacksbots.tasks.btc_monthly_review',
+    task='bots.tasks.btc_monthly_review',
 )
 
 leaderboard_update_schedule, _ = CrontabSchedule.objects.get_or_create(
@@ -63,7 +63,7 @@ leaderboard_update_schedule, _ = CrontabSchedule.objects.get_or_create(
 PeriodicTask.objects.create(
     crontab=leaderboard_update_schedule,
     name='Leaderboard Update',
-    task='stacksbots.tasks.leaderboard_update',
+    task='bots.tasks.leaderboard_update',
 )
 
 mentions_schedule, _ = CrontabSchedule.objects.get_or_create(
@@ -76,5 +76,5 @@ mentions_schedule, _ = CrontabSchedule.objects.get_or_create(
 PeriodicTask.objects.create(
     crontab=mentions_schedule,
     name='Mentions',
-    task='stacksbots.tasks.mentions',
+    task='bots.tasks.mentions',
 )
