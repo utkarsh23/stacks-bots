@@ -1,16 +1,8 @@
-@font-face {
-    font-family: 'BlinkMacSystemFont,sans-serif';
-    src: url('SF-Pro.ttf');
-}
-
-@font-face {
-    font-family: 'BlinkMacSystemFontBold,sans-serif';
-    src: url('SF-Pro-Display-Bold.otf');
-}
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
 body {
     background-color: #FF9500;
-    font-family: 'BlinkMacSystemFont,sans-serif' !important;
+    font-family: 'SF Pro Display', sans-serif !important;
 }
 
 form {
@@ -53,7 +45,7 @@ input {
     padding-left: 16px !important;
     max-width: 80%;
     border-radius: 16px;
-    font-family: 'BlinkMacSystemFont,sans-serif';
+    font-family: 'SF Pro Display', sans-serif;
 }
 
 .current {
@@ -94,7 +86,7 @@ a {
 .res-count {
     background-color: #ffffff;
     width: fit-content;
-    font-family: 'BlinkMacSystemFontBold,sans-serif';
+    font-weight: 700;
     border-radius: 16px;
     height: 32px;
     font-size: 20px;
@@ -119,19 +111,19 @@ a {
 .rank-header {
     color: #FF9500;
     font-size: 45px;
-    font-family: 'BlinkMacSystemFontBold,sans-serif';
+    font-weight: 700;
 }
 
 .rank-details {
     color: #717171;
     font-size: 20px;
     margin-top: 20px;
-    font-family: 'BlinkMacSystemFontBold,sans-serif';
+    font-weight: 700;
 }
 
 .emphasis {
     color: #000000;
-    font-family: 'BlinkMacSystemFontBold,sans-serif';
+    font-weight: 700;
 }
 
 .section-wrapper {
@@ -150,7 +142,7 @@ a {
 
 .page-heading {
     font-size: 45px;
-    font-family: 'BlinkMacSystemFontBold,sans-serif';
+    font-weight: 700;
     text-align: center;
     margin-top: 20px;
 }

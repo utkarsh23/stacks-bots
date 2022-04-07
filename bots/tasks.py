@@ -1,4 +1,3 @@
-import math
 import requests
 import time
 import tweepy
