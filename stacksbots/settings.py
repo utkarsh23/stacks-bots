@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['btcleaderboard.btc.us']
+ALLOWED_HOSTS = ['btcleaderboard.btc.us', 'btcleaderboard.xyz']
 
 
 # Application definition
