@@ -144,7 +144,7 @@ a {
     font-size: 45px;
     font-weight: 700;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .page-subheading {
@@ -177,6 +177,26 @@ a {
 .content-wrapper {
     max-width: 100%;
     width: 1200px;
+}
+
+.api-btn-wrapper {
+    position: absolute;
+}
+
+.api-btn-wrapper button {
+    font-size: 1.4em;
+    color: #FF9500 !important;
+    font-weight: 700;
+    border: 3px solid #FF9500;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    font-family: 'SF Pro Display', sans-serif;
+}
+
+.api-btn-wrapper button i {
+    font-size: 1.1em;
+    font-weight: 700;
 }
 
 @media only screen and (max-width: 900px) {
@@ -236,5 +256,9 @@ a {
     input {
         max-width: 100%;
         width: 500px;
+    }
+
+    .api-btn-wrapper button {
+        font-size: 1.2em;
     }
 }
