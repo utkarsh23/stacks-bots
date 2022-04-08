@@ -85,7 +85,7 @@
                                         <i class="material-icons">first_page</i>
                                     </button>&nbsp;&nbsp;&nbsp;
                                 </a>
-                                <a href="?page=1&query={{ search_query }}">
+                                <a href="?page={{ page_obj.previous_page_number }}&query={{ search_query }}">
                                     <button class="mdl-button mdl-js-button mdl-button--icon">
                                         <i class="material-icons">chevron_left</i>
                                     </button>
@@ -147,7 +147,7 @@
                                         <i class="material-icons">first_page</i>
                                     </button>&nbsp;&nbsp;&nbsp;
                                 </a>
-                                <a href="?page=1&query={{ search_query }}">
+                                <a href="?page={{ page_obj.previous_page_number }}&query={{ search_query }}">
                                     <button class="mdl-button mdl-js-button mdl-button--icon">
                                         <i class="material-icons">chevron_left</i>
                                     </button>
