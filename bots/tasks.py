@@ -246,7 +246,7 @@ def btc_monthly_review(self):
         return
     top_100_floor = top_100_floor_objs[top_100_floor_objs.count(
     ) - 1].twitter_follower_count
-    tweet_text = f"✨ {timezone.now().strftime('%B')} in review:\n\n"
+    tweet_text = f"✨ {(timezone.now().replace(day=1) - timedelta(days=1)).strftime('%B')} in review:\n\n"
     tweet_text += f"- {millify(leaderboard_count, precision=1)} profiles on {LEADERBOARD_WEBSITE}\n"
     tweet_text += f"- Top 10 rank floor: {millify(top_10_floor, precision=1)} followers\n"
     tweet_text += f"- Top 100 rank floor: {millify(top_100_floor, precision=1)} followers\n"
