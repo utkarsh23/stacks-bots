@@ -83,20 +83,27 @@ def bns_bot(self):
 
     for block_number in range(first_block, last_block + 1):
 
-        try:
-            url = f'{STACKS_BASE_URL}/extended/v1/tx/block_height/{block_number}?limit=200'
-            stacks_block_resp = requests.get(url)
-            stacks_block_resp.raise_for_status()
+        results = []
+        offset = 0
+        while True:
+            try:
+                url = f'{STACKS_BASE_URL}/extended/v1/tx/block_height/{block_number}?offset={offset}&limit=50'
+                stacks_block_resp = requests.get(url)
+                stacks_block_resp.raise_for_status()
 
-        except requests.exceptions.RequestException as e:
-            raise self.retry(exc=e, countdown=45)
+            except requests.exceptions.RequestException as e:
+                raise self.retry(exc=e, countdown=45)
 
-        block = dict(stacks_block_resp.json())
-        tx_count = len(block['results'])
+            resp = dict(stacks_block_resp.json())
+            results += resp['results']
+            offset += 50
 
-        for tx_index in reversed(range(tx_count)):
+            if offset >= resp['total']:
+                break
 
-            tx = block['results'][tx_index]
+        for tx_index in reversed(range(len(results))):
+
+            tx = results[tx_index]
             should_tweet = False
 
             if tx['tx_status'] == 'success' and tx['tx_type'] == 'contract_call' and \
